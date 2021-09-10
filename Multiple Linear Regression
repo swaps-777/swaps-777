@@ -1,0 +1,54 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sb
+
+A = pd.read_csv("D:/Datasets/Iris.csv")
+A.head()
+
+X = A[["Petal.Width","versicolor","setosa","virginica"]]
+Y = A[["Petal.Length"]]
+from sklearn.model_selection import train_test_split
+xtrain,xtest,ytrain,ytest = train_test_split(X,Y,test_size=0.2,random_state=30)
+
+from statsmodels.api import OLS,add_constant
+xconst = add_constant(xtrain)
+ols = OLS(ytrain,xconst)
+est = ols.fit()
+est.summary()
+
+sb.boxplot(A["Species"],A["Petal.Length"])
+
+# ONE HOT ENCODING
+A = A.join(pd.get_dummies(A.Species))
+A.head()
+
+
+X = A[["Petal.Width","versicolor","setosa","virginica"]]
+Y = A[["Petal.Length"]]
+from sklearn.model_selection import train_test_split
+xtrain,xtest,ytrain,ytest = train_test_split(X,Y,test_size=0.2,random_state=30)
+
+
+from statsmodels.api import OLS,add_constant
+xconst = add_constant(xtrain)
+ols = OLS(ytrain,xconst)
+est = ols.fit()
+est.summary()
+
+
+# LABEL ENCODING
+
+from sklearn.preprocessing import LabelEncoder
+le = LabelEncoder()
+A['NS'] = le.fit_transform(A.Species)
+
+X = A[["Petal.Width","NS"]]
+Y = A[["Petal.Length"]]
+from sklearn.model_selection import train_test_split
+xtrain,xtest,ytrain,ytest = train_test_split(X,Y,test_size=0.2,random_state=30)
+
+from statsmodels.api import OLS,add_constant
+xconst = add_constant(xtrain)
+ols = OLS(ytrain,xconst)
+est = ols.fit()
+est.summary()
