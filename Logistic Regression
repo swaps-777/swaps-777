@@ -1,0 +1,27 @@
+import pandas as pd
+import seaborn as sb
+
+A = pd.read_csv("D:/Datasets/Credit.csv")
+A.head()
+
+sb.boxplot(A.Student,A.Income)
+
+X = A[["Income","Limit","Rating","Cards"]]
+Y = A[["Student"]]
+from sklearn.model_selection import train_test_split
+xtrain,xtest,ytrain,ytest=train_test_split(X,Y,test_size = 0.2)
+
+from sklearn.linear_model import LogisticRegression
+lr = LogisticRegression()
+model = lr.fit(xtrain,ytrain)
+
+pred = model.predict(xtest)
+pred
+
+xtest['actual'] = ytest
+xtest['predicted'] = pred
+
+xtest
+
+from sklearn.metrics import accuracy_score
+accuracy_score(ytest,pred)
