@@ -1,0 +1,68 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sb
+
+A = pd.read_csv("D:/Datasets/50_Startups.csv")
+A.head()
+
+RND	ADMIN	MKT	STATE	PROFIT
+0	165349.20	136897.80	471784.10	New York	192261.83
+1	162597.70	151377.59	443898.53	California	191792.06
+2	153441.51	101145.55	407934.54	Florida	191050.39
+3	144372.41	118671.85	383199.62	New York	182901.99
+4	142107.34	91391.77	366168.42	Florida	166187.94
+
+
+A.corr()
+
+RND	ADMIN	MKT	PROFIT
+RND	1.000000	0.241955	0.724248	0.972900
+ADMIN	0.241955	1.000000	-0.032154	0.200717
+MKT	0.724248	-0.032154	1.000000	0.747766
+PROFIT	0.972900	0.200717	0.747766	1.000000
+
+
+plt.scatter(A.RND,A.PROFIT)
+plt.xlabel("RND")
+plt.ylabel("PROFIT")
+
+sb.regplot(A.RND,A.PROFIT)
+
+# Divide Data into Training and Testing Set
+X = A[["MKT"]]
+Y = A[["PROFIT"]]
+from sklearn.model_selection import train_test_split
+xtrain,xtest,ytrain,ytest = train_test_split(X,Y,test_size=0.2)
+
+# TRAINING THE MODEL
+from sklearn.linear_model import LinearRegression
+lm = LinearRegression()
+model = lm.fit(xtrain,ytrain)
+
+
+b0 = model.intercept_
+b1 = model.coef_
+
+# MAKE PREDICTIONS
+pred = model.predict(xtest)
+
+ytest['predicted_vals'] = pred
+
+ytest
+
+PROFIT	predicted_vals
+24	108552.04	96694.399922
+41	77798.83	102924.325836
+29	101004.64	87977.152121
+46	49490.75	137506.021249
+0	192261.83	183044.331863
+8	152211.77	141286.026888
+37	89949.14	111412.742307
+18	124266.90	136933.789105
+20	118474.03	137910.126032
+23	108733.99	139501.574253
+
+
+
+
+
