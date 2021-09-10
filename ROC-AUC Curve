@@ -1,0 +1,58 @@
+import pandas as pd
+import numpy as np
+import seaborn as sb
+from sklearn.linear_model import LogisticRegression
+
+A = pd.read_csv("D:/Datasets/50_Startups.csv")
+A.head()
+
+sb.pairplot(A)
+A.RND.hist()
+
+E = []
+q = np.mean(A.PROFIT)
+for i in A.PROFIT:
+   if(i < q):
+       E.append(0)
+   else:
+       E.append(1)
+       
+A['NP']=E
+
+from sklearn.model_selection import train_test_split
+X = A[['RND','MKT','ADMIN']]
+Y = A[['NP']]
+X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size = .20, random_state = 20)
+
+lr = LogisticRegression()
+model = lr.fit(X_train,Y_train)
+predicted = model.predict(X_test)
+
+from sklearn.metrics import confusion_matrix
+confusion_matrix(Y_test,predicted)
+
+lr.predict_proba(X_test)
+
+from sklearn.metrics import accuracy_score
+accuracy_score(Y_test,predicted)
+
+
+import sklearn.metrics as m
+# calculate the fpr and tpr for all thresholds of the classification
+probs = lr.predict_proba(X_test)
+preds = probs[:,1]
+fpr, tpr, threshold = m.roc_curve(Y_test, preds)
+roc_auc = m.auc(fpr, tpr)
+
+import matplotlib.pyplot as plt
+plt.plot(fpr, tpr, roc_auc)
+
+roc_auc
+
+print(m.classification_report(Y_test,predicted))
+
+m.classification_report(Y_test,predicted)
+
+m.roc_curve(Y_test,lr.predict_proba(X_test)[:,1])
+
+
